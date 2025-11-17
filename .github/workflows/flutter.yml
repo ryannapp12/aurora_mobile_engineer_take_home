@@ -1,0 +1,27 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Analyze
+        run: flutter analyze
+      - name: Run tests (unit and widget, skip goldens)
+        run: flutter test --tags 'not golden'
+      - name: Build debug APK (smoke build)
+        run: flutter build apk --debug
+
+
