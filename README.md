@@ -4,9 +4,10 @@ Tiny mobile app that fetches a random image and displays it centered as a square
 
 ## Demo
 
-- Video walkthrough: [Demo iOS video](docs/demo_ios.mp4)
+- Video walkthrough: [Demo iOS video](docs/demo_ios.mp4) 
+  - Or find Google Drive link [HERE](https://drive.google.com/file/d/1xpD-Xp0dGRZ1HAoheR_HwNWu_4O_jcmZ/view?usp=share_link)
 - Video walkthrough: [Demo Android video](docs/demo_android.mp4)
-- (Or you can find both walkthroughs [HERE](https://drive.google.com/file/d/1xpD-Xp0dGRZ1HAoheR_HwNWu_4O_jcmZ/view?usp=share_link))
+  - Or find Google Drive link [HERE](https://drive.google.com/file/d/188q43Kpz64nTpo3jc_ofJcDuWkcIFmYK/view?usp=sharing)
 
 ## Repository details
 
