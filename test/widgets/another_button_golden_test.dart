@@ -1,6 +1,7 @@
 @Tags(['golden'])
 library;
 
+import 'package:aurora_mobile_engineer_take_home/app/theme/cubit/theme_cubit.dart';
 import 'package:aurora_mobile_engineer_take_home/features/random_image/domain/entities/random_image.dart';
 import 'package:aurora_mobile_engineer_take_home/features/random_image/domain/repositories/random_image_repository.dart';
 import 'package:aurora_mobile_engineer_take_home/features/random_image/presentation/cubit/random_image_cubit.dart';
@@ -27,16 +28,21 @@ void main() {
   testWidgets('AnotherButton golden', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        home: BlocProvider<RandomImageCubit>(
-          create: (_) => RandomImageCubit(
-            repository: _FakeRepo(),
-            paletteAnalyzer: (_, __) async =>
-                (primary: Colors.blue, secondary: Colors.blueAccent),
-          ),
-          child: Scaffold(
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<RandomImageCubit>(
+              create: (_) => RandomImageCubit(
+                repository: _FakeRepo(),
+                paletteAnalyzer: (_, __) async =>
+                    (primary: Colors.blue, secondary: Colors.blueAccent),
+              ),
+            ),
+            BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+          ],
+          child: const Scaffold(
             body: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: const AnotherButton(),
+              padding: EdgeInsets.all(24.0),
+              child: AnotherButton(),
             ),
           ),
         ),
