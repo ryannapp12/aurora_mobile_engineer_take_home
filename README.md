@@ -9,7 +9,7 @@ Tiny mobile app that fetches a random image and displays it centered as a square
 
 ## Repository details
 
-- Repo URL: <ADD_PUBLIC_REPO_URL_HERE>
+- Repo URL: <https://github.com/ryannapp12/aurora_mobile_engineer_take_home>
 - Default branch: `main`
 - CI: GitHub Actions workflow runs analyze + unit/widget tests and a smoke build (`.github/workflows/flutter.yml`)
 - Flutter: 3.32+ (stable)
