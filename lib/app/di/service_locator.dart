@@ -1,6 +1,7 @@
 
 import 'package:aurora_mobile_engineer_take_home/app/theme/cubit/theme_cubit.dart';
 import 'package:aurora_mobile_engineer_take_home/core/utils/logger_helper.dart';
+import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_config.dart';
 import 'package:aurora_mobile_engineer_take_home/features/random_image/data/repositories/random_image_repository_impl.dart';
 import 'package:aurora_mobile_engineer_take_home/features/random_image/domain/repositories/random_image_repository.dart';
 import 'package:aurora_mobile_engineer_take_home/features/random_image/presentation/cubit/random_image_cubit.dart';
@@ -11,8 +12,7 @@ import 'package:http/http.dart' as http;
 
 final GetIt serviceLocator = GetIt.instance;
 
-const String _baseUrl =
-      'https://november7-730026606190.europe-west1.run.app';
+const String _baseUrl = AppConfig.apiBaseUrl;
 Future<void> setupServiceLocator() async {
   LoggerHelper.info('Setting up service locator...');
   // ********************* First-run Keychain Reset *********************
@@ -42,8 +42,8 @@ Future<void> setupServiceLocator() async {
     serviceLocator.registerLazySingleton<Dio>(() => Dio(
       BaseOptions(
         baseUrl: _baseUrl,
-        connectTimeout: const Duration(seconds: 3),
-        receiveTimeout: const Duration(seconds: 5),
+        connectTimeout: const Duration(seconds: 2),
+        receiveTimeout: const Duration(seconds: 4),
         headers: {'Accept': 'application/json'},
       ),
     ));

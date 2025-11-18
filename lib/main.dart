@@ -4,13 +4,12 @@ import 'package:aurora_mobile_engineer_take_home/app/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'bootstrap.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Platform-specific UI mode
-  if (Platform.isIOS) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-  } else if (Platform.isAndroid) {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  // Edge-to-edge on all platforms; adjust icons for Android.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,

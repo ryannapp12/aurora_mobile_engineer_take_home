@@ -30,15 +30,17 @@ class LoadingSquare extends StatelessWidget {
               const Skeleton(),
               // Subtle overlay to mimic image tone mapping
               IgnorePointer(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.black.withValues(alpha: 0.06),
-                        AppColors.black.withValues(alpha: 0.10),
-                      ],
+                child: ExcludeSemantics(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColors.black.withValues(alpha: 0.06),
+                          AppColors.black.withValues(alpha: 0.10),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -50,5 +52,3 @@ class LoadingSquare extends StatelessWidget {
     );
   }
 }
-
-

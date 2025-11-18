@@ -1,6 +1,8 @@
 import 'dart:ui';
+import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_colors.dart';
+import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_sizes.dart';
+import 'package:aurora_mobile_engineer_take_home/core/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/shared/constants/app_colors.dart';
 
 class GlassActionBar extends StatelessWidget {
   const GlassActionBar({super.key, required this.child});
@@ -8,9 +10,11 @@ class GlassActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = context.isDarkTheme;
+    final Color baseGlass = isDark ? AppColors.primary : AppColors.secondary;
     final border = BorderRadius.circular(24);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
       child: ClipRRect(
         borderRadius: border,
         child: BackdropFilter(
@@ -22,17 +26,20 @@ class GlassActionBar extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.white.withValues(alpha: 0.12),
-                  AppColors.white.withValues(alpha: 0.06),
+                  baseGlass.withValues(alpha: isDark ? 0.20 : 0.12),
+                  baseGlass.withValues(alpha: isDark ? 0.12 : 0.06),
                 ],
               ),
               border: Border.all(
-                color: AppColors.white.withValues(alpha: 0.18),
+                color: baseGlass.withValues(alpha: isDark ? 0.28 : 0.18),
                 width: 1,
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.md,
+                vertical: AppSizes.sm3,
+              ),
               child: child,
             ),
           ),
@@ -41,5 +48,3 @@ class GlassActionBar extends StatelessWidget {
     );
   }
 }
-
-

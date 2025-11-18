@@ -1,3 +1,4 @@
+import 'package:aurora_mobile_engineer_take_home/core/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 
 class Skeleton extends StatelessWidget {
@@ -5,8 +6,8 @@ class Skeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final base = Theme.of(context).colorScheme.surfaceContainerHighest;
-    final highlight = Theme.of(context).colorScheme.surfaceContainerHigh;
+    final base = context.theme.colorScheme.surfaceContainerHighest;
+    final highlight = context.theme.colorScheme.surfaceContainerHigh;
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: const Duration(milliseconds: 900),
@@ -27,7 +28,7 @@ class Skeleton extends StatelessWidget {
               child: CircularProgressIndicator(
                 strokeWidth: 3,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  Theme.of(context).colorScheme.onSurfaceVariant,
+                  context.theme.colorScheme.onSurfaceVariant,
                 ),
               ),
             ),

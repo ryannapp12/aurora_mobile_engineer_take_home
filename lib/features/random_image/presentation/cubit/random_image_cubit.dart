@@ -30,6 +30,9 @@ class RandomImageCubit extends HydratedCubit<RandomImageState> {
   RandomImageSuccess? _prefetched;
   final Future<({Color primary, Color secondary})> Function(String, String)
   _paletteAnalyzer;
+  bool _isFetching = false;
+  bool get isFetching => _isFetching;
+  bool _isPrefetching = false;
 
   Future<RandomImageSuccess> _fetchAndAnalyzeFromApi() async {
     final RandomImage image = await _repository.fetchRandomImage();
@@ -50,6 +53,8 @@ class RandomImageCubit extends HydratedCubit<RandomImageState> {
   }
 
   Future<void> _prefetchNext() async {
+    if (_isPrefetching) return;
+    _isPrefetching = true;
     try {
       final next = await _fetchAndAnalyzeFromApi();
       // Warm caches for fast swap
@@ -59,10 +64,14 @@ class RandomImageCubit extends HydratedCubit<RandomImageState> {
     } catch (_) {
       // Ignore prefetch failures; user flow remains functional
       _prefetched = null;
+    } finally {
+      _isPrefetching = false;
     }
   }
 
   Future<void> loadRandomImage() async {
+    if (_isFetching) return;
+    _isFetching = true;
     try {
       // If we have a prefetched image, swap instantly for a snappy feel
       if (_prefetched != null) {
@@ -80,7 +89,19 @@ class RandomImageCubit extends HydratedCubit<RandomImageState> {
       unawaited(_prefetchNext());
     } catch (e) {
       emit(RandomImageFailure(message: AppStrings.failedToLoadImage));
+    } finally {
+      _isFetching = false;
     }
+  }
+
+  /// Ensure the first image is present if not restored from hydration.
+  void ensureFirstImage() {
+    if (state is RandomImageSuccess) {
+      // Kick off a prefetch for snappier "Another" after cold start restore
+      unawaited(_prefetchNext());
+      return;
+    }
+    unawaited(loadRandomImage());
   }
 
   @override
@@ -121,13 +142,18 @@ Future<({Color primary, Color secondary})> _defaultPaletteAnalyzer(
   String previewUrl,
   String originalUrl,
 ) async {
-  try {
-    final previewProvider = CachedNetworkImageProvider(previewUrl);
-    final palette = await PaletteGenerator.fromImageProvider(
-      previewProvider,
+  // Timebox palette extraction and always return a value to avoid blocking UI.
+  Future<PaletteGenerator> computeFrom(ImageProvider provider) {
+    return PaletteGenerator.fromImageProvider(
+      provider,
       maximumColorCount: 20,
       size: const Size(200, 200),
-    );
+    ).timeout(const Duration(milliseconds: 900));
+  }
+
+  try {
+    final previewProvider = CachedNetworkImageProvider(previewUrl);
+    final palette = await computeFrom(previewProvider);
     final primary =
         palette.dominantColor?.color ??
         palette.vibrantColor?.color ??
@@ -141,23 +167,26 @@ Future<({Color primary, Color secondary})> _defaultPaletteAnalyzer(
         Color.lerp(primary, AppColors.white, 0.2)!;
     return (primary: primary, secondary: secondary);
   } catch (_) {
-    final fallbackProvider = CachedNetworkImageProvider(originalUrl);
-    final palette = await PaletteGenerator.fromImageProvider(
-      fallbackProvider,
-      maximumColorCount: 20,
-      size: const Size(200, 200),
-    );
-    final primary =
-        palette.dominantColor?.color ??
-        palette.vibrantColor?.color ??
-        palette.mutedColor?.color ??
-        Colors.black;
-    final secondary =
-        palette.lightVibrantColor?.color ??
-        palette.darkVibrantColor?.color ??
-        palette.lightMutedColor?.color ??
-        palette.darkMutedColor?.color ??
-        Color.lerp(primary, AppColors.white, 0.2)!;
-    return (primary: primary, secondary: secondary);
+    try {
+      final fallbackProvider = CachedNetworkImageProvider(originalUrl);
+      final palette = await computeFrom(fallbackProvider);
+      final primary =
+          palette.dominantColor?.color ??
+          palette.vibrantColor?.color ??
+          palette.mutedColor?.color ??
+          Colors.black;
+      final secondary =
+          palette.lightVibrantColor?.color ??
+          palette.darkVibrantColor?.color ??
+          palette.lightMutedColor?.color ??
+          palette.darkMutedColor?.color ??
+          Color.lerp(primary, AppColors.white, 0.2)!;
+      return (primary: primary, secondary: secondary);
+    } catch (_) {
+      // Final fallback: neutral dark with slight light secondary to ensure contrast.
+      const primary = Colors.black;
+      final secondary = Color.lerp(primary, AppColors.white, 0.2)!;
+      return (primary: primary, secondary: secondary);
+    }
   }
 }

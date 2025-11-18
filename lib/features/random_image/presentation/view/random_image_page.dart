@@ -1,3 +1,4 @@
+import 'package:aurora_mobile_engineer_take_home/core/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class RandomImagePage extends StatelessWidget {
       },
       child: BlocBuilder<RandomImageCubit, RandomImageState>(
         builder: (context, state) {
-          final surface = Theme.of(context).colorScheme.surface;
+          final surface = context.theme.colorScheme.surface;
           final primary = switch (state) {
             RandomImageSuccess(:final primaryColor) => primaryColor,
             _ => surface,

@@ -27,16 +27,18 @@ class ImageSquare extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           IgnorePointer(
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  radius: 0.8,
-                  colors: [
-                    glowColor.withValues(alpha: 0.20),
-                    glowColor.withValues(alpha: 0.04),
-                    AppColors.black.withValues(alpha: 0.0),
-                  ],
+            child: ExcludeSemantics(
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    radius: 0.8,
+                    colors: [
+                      glowColor.withValues(alpha: 0.20),
+                      glowColor.withValues(alpha: 0.04),
+                      AppColors.black.withValues(alpha: 0.0),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -64,6 +66,9 @@ class ImageSquare extends StatelessWidget {
                       previewUrl,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.low,
+                      // If the tiny preview fails (e.g., 404), show a soft tint
+                      errorBuilder: (_, __, ___) =>
+                          Container(color: glowColor.withValues(alpha: 0.10)),
                     ),
                   ),
                   Semantics(
@@ -73,32 +78,27 @@ class ImageSquare extends StatelessWidget {
                       imageUrl: url,
                       fit: BoxFit.cover,
                       fadeInDuration: const Duration(milliseconds: 450),
-                      placeholderFadeInDuration: const Duration(milliseconds: 200),
+                      placeholderFadeInDuration: const Duration(
+                        milliseconds: 200,
+                      ),
                       placeholder: (context, _) => const SizedBox.shrink(),
-                      errorWidget: (context, _, __) {
-                        // Fallback to original Unsplash URL if proxy variant fails
-                        return CachedNetworkImage(
-                          imageUrl: originalUrl,
-                          fit: BoxFit.cover,
-                          fadeInDuration: const Duration(milliseconds: 350),
-                          placeholder: (context, _) => const SizedBox.shrink(),
-                          errorWidget: (context, __, ___) => const ErrorSquare(
-                            message: AppStrings.imageFailedToLoad,
-                          ),
-                        );
-                      },
+                      errorWidget: (context, _, __) => const ErrorSquare(
+                        message: AppStrings.imageFailedToLoad,
+                      ),
                     ),
                   ),
                   IgnorePointer(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            AppColors.black.withValues(alpha: 0.06),
-                            AppColors.black.withValues(alpha: 0.10),
-                          ],
+                    child: ExcludeSemantics(
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColors.black.withValues(alpha: 0.06),
+                              AppColors.black.withValues(alpha: 0.10),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -112,5 +112,3 @@ class ImageSquare extends StatelessWidget {
     );
   }
 }
-
-

@@ -1,3 +1,5 @@
+import 'package:aurora_mobile_engineer_take_home/core/utils/context_extensions.dart';
+import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,21 +30,14 @@ class _AnotherButtonState extends State<AnotherButton>
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    // Adapt button contrast based on current background (primary palette color)
-    final bgPrimary = context.select<RandomImageCubit, Color?>((cubit) {
-      final state = cubit.state;
-      return state is RandomImageSuccess ? state.primaryColor : null;
-    });
-    final bool bgIsLight =
-        (bgPrimary ?? colorScheme.surface).computeLuminance() > 0.6;
-
-    final Color backgroundColor = bgIsLight
-        ? colorScheme.primary
-        : colorScheme.primaryContainer;
-    final Color foregroundColor = bgIsLight
-        ? colorScheme.onPrimary
-        : colorScheme.onPrimaryContainer;
+    // Hard align button palette with brand tokens:
+    // - Light mode: AppColors.primary
+    // - Dark mode: AppColors.secondary
+    final bool isDark = context.isDarkTheme;
+    final Color backgroundColor = isDark
+        ? AppColors.primary
+        : AppColors.secondary;
+    final Color foregroundColor = AppColors.white;
 
     final button = Semantics(
       label: AppStrings.loadAnotherImage,

@@ -40,8 +40,8 @@ class AnimatedGradientBackground extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.black.withValues(alpha: 0.02),
-            AppColors.black.withValues(alpha: 0.06),
+            AppColors.black.withValues(alpha: 0.04),
+            AppColors.black.withValues(alpha: 0.12),
           ],
         ),
       ),

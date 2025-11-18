@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../../core/shared/constants/app_config.dart';
 
 import '../../domain/entities/random_image.dart';
 import '../../domain/repositories/random_image_repository.dart';
@@ -11,14 +12,13 @@ class RandomImageRepositoryImpl implements RandomImageRepository {
           Dio(
             BaseOptions(
               baseUrl: _baseUrl,
-              connectTimeout: const Duration(seconds: 3),
-              receiveTimeout: const Duration(seconds: 5),
+              connectTimeout: const Duration(seconds: 2),
+              receiveTimeout: const Duration(seconds: 4),
               headers: {'Accept': 'application/json'},
             ),
           );
 
-  static const String _baseUrl =
-      'https://november7-730026606190.europe-west1.run.app';
+  static const String _baseUrl = AppConfig.apiBaseUrl;
 
   final Dio _dio;
 

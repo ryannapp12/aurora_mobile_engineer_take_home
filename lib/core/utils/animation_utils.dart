@@ -65,6 +65,7 @@ mixin ButtonAnimationMixin<T extends StatefulWidget>
   AnimationController get buttonController => _buttonController;
   Animation<double> get buttonScale => _buttonScale;
   Future<void> triggerButtonPress({VoidCallback? onComplete}) {
+    HapticFeedback.mediumImpact();
     return AnimationUtils.triggerButtonPressAnimation(
       _buttonController,
       onComplete: onComplete,

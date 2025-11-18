@@ -1,7 +1,9 @@
 import 'package:aurora_mobile_engineer_take_home/app/theme/cubit/theme_cubit.dart';
+import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_colors.dart'
+    show AppColors;
 import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_sizes.dart';
-import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_colors.dart';
 import 'package:aurora_mobile_engineer_take_home/core/shared/constants/app_strings.dart';
+import 'package:aurora_mobile_engineer_take_home/core/utils/context_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui';
@@ -16,31 +18,25 @@ class ThemeModeSwitch extends StatelessWidget {
     return BlocBuilder<ThemeCubit, ThemeState>(
       buildWhen: (prev, curr) => prev.themeMode != curr.themeMode,
       builder: (context, state) {
-        final themeCubit = context.read<ThemeCubit>();
-        final bool isDark = themeCubit.isDark;
-        final onSurface = Theme.of(context).colorScheme.onSurface;
-        // Peek current page palette to adapt glass tint against very light backgrounds
-        final bgPrimary = context.select<RandomImageCubit, Color?>((cubit) {
+        final bool isDark = context.isDarkTheme;
+        // Peek current page palette if needed in future for adaptive tweaks (not used now)
+        context.select<RandomImageCubit, Color?>((cubit) {
           final s = cubit.state;
           return s is RandomImageSuccess ? s.primaryColor : null;
         });
-        final bool bgIsLight =
-            (bgPrimary ?? Theme.of(context).colorScheme.surface)
-                .computeLuminance() >
-            0.6;
-        // If background is light, use darker glass; otherwise use lighter glass
-        final Color glassStart = bgIsLight
-            ? AppColors.black.withValues(alpha: 0.12)
-            : AppColors.white.withValues(alpha: 0.12);
-        final Color glassEnd = bgIsLight
-            ? AppColors.black.withValues(alpha: 0.08)
-            : AppColors.white.withValues(alpha: 0.06);
-        final Color borderColor =
-            (bgIsLight ? AppColors.black : AppColors.white).withValues(
-              alpha: 0.18,
-            );
+        // Use theme-aware glass: darker glass in dark mode, lighter in light mode.
+        final Color baseGlass = isDark
+            ? AppColors.primary
+            : AppColors.secondary;
+        final double startA = isDark ? 0.20 : 0.12;
+        final double endA = isDark ? 0.12 : 0.08;
+        final double borderA = isDark ? 0.30 : 0.18;
+        final Color glassStart = baseGlass.withValues(alpha: startA);
+        final Color glassEnd = baseGlass.withValues(alpha: endA);
+        final Color borderColor = baseGlass.withValues(alpha: borderA);
         final label = isDark ? AppStrings.dark : AppStrings.light;
-
+        final labelColor = isDark ? AppColors.primary : AppColors.secondary;
+        final iconColor = isDark ? AppColors.primary : AppColors.secondary;
         return Padding(
           padding: EdgeInsets.symmetric(
             horizontal: AppSizes.sm,
@@ -73,13 +69,13 @@ class ThemeModeSwitch extends StatelessWidget {
                             ? Icons.dark_mode_rounded
                             : Icons.light_mode_rounded,
                         size: 18,
-                        color: onSurface,
+                        color: iconColor,
                       ),
                       SizedBox(width: AppSizes.xs),
                       Text(
                         label,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: onSurface,
+                        style: context.theme.textTheme.bodyMedium?.copyWith(
+                          color: labelColor,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -90,7 +86,7 @@ class ThemeModeSwitch extends StatelessWidget {
                           value: isDark,
                           onChanged: (value) {
                             HapticFeedback.selectionClick();
-                            themeCubit.toggleDark(value);
+                            context.read<ThemeCubit>().toggleDark(value);
                           },
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
