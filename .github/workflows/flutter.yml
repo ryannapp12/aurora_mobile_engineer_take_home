@@ -20,6 +20,6 @@ jobs:
       - name: Analyze
         run: flutter analyze
       - name: Run tests (unit and widget, skip goldens)
-        run: flutter test --tags 'not golden'
+        run: flutter test -x golden
       - name: Build debug APK (smoke build)
         run: flutter build apk --debug

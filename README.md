@@ -133,13 +133,13 @@ Example response:
    ```
 4. Run unit/widget tests (excluding goldens):
    ```
-   flutter test --tags 'not golden'
+   flutter test -x golden
    ```
 5. Generate/update goldens locally (optional):
    ```
    flutter test --update-goldens --tags golden
    ```
-   Commit the generated files under `test/goldens/`.
+   Double check that the filed were generated under `test/goldens/`.
 
 ## VS Code (optional)
 
