@@ -139,7 +139,7 @@ Example response:
    ```
    flutter test --update-goldens --tags golden
    ```
-   Double check that the filed were generated under `test/goldens/`.
+   Double check that the files were generated under `test/goldens/`.
 
 ## VS Code (optional)
 
